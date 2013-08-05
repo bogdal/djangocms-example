@@ -4,6 +4,6 @@ django-filer
 cmsplugin-filer
 djangocms-text-ckeditor
 djangocms-admin-style
-
+pillow
 easy-thumbnails
 -e git+ssh://git@github.com/divio/django-cms.git@3.0.0.beta#egg=django_cms-3beta

@@ -1,0 +1,10 @@
+Django>=1.5
+django-cms==2.4.2
+south
+django-reversion
+django-filer
+djangocms-admin-style
+cmsplugin-filer
+pillow
+easy-thumbnails
+

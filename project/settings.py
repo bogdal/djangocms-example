@@ -128,7 +128,6 @@ INSTALLED_APPS = (
     'cms.plugins.googlemap',
     'cms.plugins.link',
     'cms.plugins.snippet',
-    'cms.plugins.twitter',
     'djangocms_text_ckeditor',
     'filer',
     'cmsplugin_filer_file',

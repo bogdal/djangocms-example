@@ -114,6 +114,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 INSTALLED_APPS = (
+    'admin_shortcuts',
+
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -124,11 +126,10 @@ INSTALLED_APPS = (
     'django.contrib.admin',
 
     # cms plugins
-    'cms.plugins.flash',
-    'cms.plugins.googlemap',
-    'cms.plugins.link',
-    'cms.plugins.snippet',
     'djangocms_text_ckeditor',
+    'djangocms_flash',
+    'djangocms_googlemap',
+    'djangocms_snippet',
     'filer',
     'cmsplugin_filer_file',
     'cmsplugin_filer_folder',
@@ -138,12 +139,12 @@ INSTALLED_APPS = (
 
     # external    
     'cms',
-    'cms.stacks',
     'mptt',
     'menus',
     'south',
     'sekizai',
     'reversion',
+    'easy_thumbnails',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -174,6 +175,30 @@ LOGGING = {
         },
     }
 }
+
+# django admin shortcuts
+ADMIN_SHORTCUTS = [
+    {
+        'shortcuts': [
+            {
+                'url': '/',
+                'open_new_window': True,
+            },
+            {
+                'url_name': 'admin:cms_page_changelist',
+                'title': gettext('Pages'),
+            },
+            {
+                'url_name': 'admin:filer_folder_changelist',
+                'title': gettext('Files'),
+            },
+            {
+                'url_name': 'admin:auth_user_changelist',
+                'title': gettext('Users'),
+            },
+        ],
+    },
+]
 
 LANGUAGES = [
     ('en', 'English'),

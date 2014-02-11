@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 gettext = lambda s: s
-PROJECT_PATH = os.path.split(os.path.abspath(os.path.dirname(__file__)))[0]
+PROJECT_ROOT = os.path.split(os.path.abspath(os.path.dirname(__file__)))[0]
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -15,7 +15,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_PATH, 'sqlite3.db'),
+        'NAME': os.path.join(PROJECT_ROOT, 'sqlite3.db'),
     }
 }
 
@@ -46,17 +46,15 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-MEDIA_ROOT = os.path.join(PROJECT_PATH, "media")
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, "media")
 MEDIA_URL = "/media/"
 
-STATIC_ROOT = os.path.join(PROJECT_PATH, "static")
+STATIC_ROOT = os.path.join(PROJECT_ROOT, "static")
 STATIC_URL = "/static/"
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    os.path.join(PROJECT_ROOT, 'project', 'static'),
 )
 
 # List of finder classes that know how to find static files in
@@ -96,12 +94,13 @@ ROOT_URLCONF = 'project.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'project.wsgi.application'
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(PROJECT_PATH, "templates"),
-)
+TEMPLATE_DIRS = [
+    os.path.join(PROJECT_ROOT, "templates"),
+]
+
+LOCALE_PATHS = [
+    os.path.join(PROJECT_ROOT, 'locale')
+]
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
@@ -113,8 +112,17 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'sekizai.context_processors.sekizai',
 )
 
-INSTALLED_APPS = (
+THUMBNAIL_PROCESSORS = (
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    #'easy_thumbnails.processors.scale_and_crop',
+    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
+    'easy_thumbnails.processors.filters',
+)
+
+INSTALLED_APPS = [
     'admin_shortcuts',
+    'djangocms_admin_style',
 
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -122,7 +130,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'djangocms_admin_style',
     'django.contrib.admin',
 
     # cms plugins
@@ -145,7 +152,8 @@ INSTALLED_APPS = (
     'sekizai',
     'reversion',
     'easy_thumbnails',
-)
+    'storages',
+]
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -208,3 +216,20 @@ CMS_TEMPLATES = (
     ('template_1.html', 'Custom template'),
 )
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Amazon S3 configuration
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_SECURE_URLS = os.environ.get('AWS_S3_SECURE_URLS', False)
+AWS_QUERYSTRING_AUTH = os.environ.get('AWS_QUERYSTRING_AUTH', False)
+
+if AWS_STORAGE_BUCKET_NAME:
+    DEFAULT_FILE_STORAGE = 'project.core.s3.MediaRootS3BotoStorage'
+    STATICFILES_STORAGE = 'project.core.s3.StaticRootS3BotoStorage'
+    THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
+
+    S3_URL = 'http://%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+    STATIC_URL = S3_URL + STATIC_URL
+    MEDIA_URL = S3_URL + MEDIA_URL

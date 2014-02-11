@@ -12,3 +12,5 @@ django-admin-shortcuts==1.2.5
 pillow==2.3.0
 easy-thumbnails==1.4
 git+http://github.com/divio/django-cms.git
+django-storages>=1.1.8
+boto>=2.23.0

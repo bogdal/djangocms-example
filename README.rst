@@ -13,3 +13,10 @@ Quickstart
  cd your-project
  make init
  
+
+Configure environment variables:
+
+.. code-block:: bash
+
+    export DEBUG='on'
+    export SECRET_KEY='...'

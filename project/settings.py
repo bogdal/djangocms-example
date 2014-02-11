@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
+import dj_database_url
+
 gettext = lambda s: s
 PROJECT_ROOT = os.path.split(os.path.abspath(os.path.dirname(__file__)))[0]
 
-DEBUG = True
+DEBUG = bool(os.environ.get('DEBUG', False))
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -12,16 +14,23 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_ROOT, 'sqlite3.db'),
-    }
-}
+INTERNAL_IPS = os.environ.get('INTERNAL_IPS', '127.0.0.1').split()
 
-# Hosts/domain names that are valid for this site; required if DEBUG is False
-# See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+SQLITE_DB_URL = 'sqlite:///' + os.path.join(PROJECT_ROOT, 'sqlite3.db')
+
+DATABASES = {'default': dj_database_url.config(default=SQLITE_DB_URL)}
+
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split()
+
+EMAIL_BACKEND = ('django.core.mail.backends.%s.EmailBackend' %
+                 os.environ.get('EMAIL_BACKEND_MODULE', 'console'))
+
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_USE_TLS = bool(os.environ.get('EMAIL_USE_TLS', False))
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -66,7 +75,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '70lj3n_u-nauxe&*^=c1r7v1w0pm68(fe#p#u(o2d+@o=%v87!'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -75,7 +84,7 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -87,7 +96,10 @@ MIDDLEWARE_CLASSES = (
     'cms.middleware.user.CurrentUserMiddleware',
     'cms.middleware.toolbar.ToolbarMiddleware',
     'cms.middleware.language.LanguageCookieMiddleware',
-)
+]
+
+if DEBUG:
+    MIDDLEWARE_CLASSES += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 
 ROOT_URLCONF = 'project.urls'
 
@@ -155,6 +167,15 @@ INSTALLED_APPS = [
     'storages',
 ]
 
+if DEBUG:
+    INSTALLED_APPS += ['debug_toolbar']
+
+SENTRY_DSN = os.environ.get('SENTRY_DSN')
+
+if SENTRY_DSN:
+    INSTALLED_APPS += ['raven.contrib.django.raven_compat']
+    RAVEN_CONFIG = {'dsn': SENTRY_DSN}
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
@@ -215,6 +236,8 @@ LANGUAGES = [
 CMS_TEMPLATES = (
     ('template_1.html', 'Custom template'),
 )
+
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 

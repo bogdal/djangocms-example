@@ -14,3 +14,6 @@ easy-thumbnails==1.4
 git+http://github.com/divio/django-cms.git
 django-storages>=1.1.8
 boto>=2.23.0
+dj_database_url>=0.2.2
+django-debug-toolbar>=1.0.1
+raven==3.4.0

@@ -234,7 +234,9 @@ LANGUAGES = [
 ]
 
 CMS_TEMPLATES = (
-    ('template_1.html', 'Custom template'),
+    ('fullwidth.html', 'Full-width template'),
+    ('sidebar_left.html', 'Sidebar left template'),
+    ('homepage.html', 'Homepage template'),
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'

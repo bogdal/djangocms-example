@@ -230,8 +230,31 @@ ADMIN_SHORTCUTS = [
 ]
 
 LANGUAGES = [
-    ('en', 'English'),
+    ('en', gettext('English')),
+    ('pl', gettext('Polish')),
 ]
+
+CMS_LANGUAGES = {
+    1: [
+        {
+            'code': 'en',
+            'name': gettext('English'),
+            'fallbacks': [],
+        },
+        {
+            'code': 'pl',
+            'name': gettext('Polish'),
+            'fallbacks': [],
+        },
+
+    ],
+    'default': {
+        'fallbacks': [],
+        'redirect_on_fallback': False,
+        'public': True,
+        'hide_untranslated': True,
+    }
+}
 
 CMS_TEMPLATES = (
     ('fullwidth.html', 'Full-width template'),

@@ -54,6 +54,12 @@
         </div><!--/.container-fluid -->
       </div>
 
+      {% block breadcrumb %}
+          <ol class="breadcrumb">
+            {% show_breadcrumb 0 "includes/menu/breadcrumb.html" %}
+          </ol>
+      {% endblock breadcrumb %}
+
       {% block container %}
           {% block content %}{% endblock %}
       {% endblock %}

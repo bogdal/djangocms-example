@@ -3,7 +3,7 @@ django-reversion==1.8
 django-filer==0.9.5
 cmsplugin-filer==0.9.5
 djangocms-googlemap==0.0.1
-djangocms-flash==0.0.1
+djangocms-flash==0.0.2
 djangocms-link==1.1.3
 djangocms-snippet==1.0.2
 djangocms-text-ckeditor==2.1.1
@@ -17,3 +17,4 @@ boto>=2.23.0
 dj_database_url>=0.2.2
 django-debug-toolbar>=1.0.1
 raven==3.4.0
+django-robots==1.0

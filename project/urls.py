@@ -1,3 +1,4 @@
+from cms.sitemaps import CMSSitemap
 from django.conf.urls import url, include, patterns
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
@@ -5,7 +6,11 @@ from django.conf import settings
 
 admin.autodiscover()
 
-urlpatterns = i18n_patterns('',
+urlpatterns = patterns('',
+    url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap',
+        {'sitemaps': {'cmspages': CMSSitemap}}),
+    url(r'^robots\.txt$', include('robots.urls')),
+) + i18n_patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('cms.urls')),
 )

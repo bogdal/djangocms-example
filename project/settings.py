@@ -142,6 +142,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     'django.contrib.admin',
 
     # cms plugins
@@ -165,6 +166,7 @@ INSTALLED_APPS = [
     'reversion',
     'easy_thumbnails',
     'storages',
+    'robots',
 ]
 
 if DEBUG:

@@ -40,7 +40,7 @@ TIME_ZONE = 'America/Chicago'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
 SITE_ID = 1
 
@@ -72,6 +72,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'compressor.finders.CompressorFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -122,6 +123,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'cms.context_processors.media',
     'sekizai.context_processors.sekizai',
+    'project.core.context_processors.cache_timeout',
 )
 
 THUMBNAIL_PROCESSORS = (
@@ -167,6 +169,7 @@ INSTALLED_APPS = [
     'easy_thumbnails',
     'storages',
     'robots',
+    'compressor',
 ]
 
 if DEBUG:
@@ -270,6 +273,10 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+COMPRESS_ENABLED = bool(os.environ.get('COMPRESS_ENABLED', False))
+COMPRESS_OUTPUT_DIR = ''
+COMPRESS_ROOT = STATIC_ROOT
+
 # Amazon S3 configuration
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
@@ -285,3 +292,18 @@ if AWS_STORAGE_BUCKET_NAME:
     S3_URL = 'http://%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
     STATIC_URL = S3_URL + STATIC_URL
     MEDIA_URL = S3_URL + MEDIA_URL
+
+    if COMPRESS_ENABLED:
+        COMPRESS_STORAGE = 'project.core.s3.CachedS3BotoStorage'
+        COMPRESS_URL = STATIC_URL
+        STATICFILES_STORAGE = COMPRESS_STORAGE
+
+MEMCACHE_SERVERS = os.environ.get('MEMCACHE_SERVERS')
+
+if MEMCACHE_SERVERS:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': MEMCACHE_SERVERS,
+        }
+    }

@@ -1,4 +1,4 @@
-{% load cms_tags sekizai_tags static menu_tags %}
+{% load cms_tags sekizai_tags static menu_tags compress cache %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
   <head>
@@ -16,8 +16,11 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
 
-    <!-- Custom styles for this template -->
-    <link href="{% static "css/styles.css" %}" rel="stylesheet">
+    {% compress css %}
+        <!-- Custom styles for this template -->
+        <link href="{% static "css/styles.css" %}" rel="stylesheet">
+        <!-- ... -->
+    {% endcompress %}
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -60,9 +63,11 @@
           </ol>
       {% endblock breadcrumb %}
 
-      {% block container %}
-          {% block content %}{% endblock %}
-      {% endblock %}
+      {% cache CACHE_TIMEOUT container request.path request.user.is_superuser %}
+          {% block container %}
+              {% block content %}{% endblock %}
+          {% endblock %}
+      {% endcache %}
 
       <hr>
       <footer>
@@ -74,8 +79,11 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    {% compress js %}
+    {% endcompress %}
     {% render_block "js" %}
   </body>
 </html>

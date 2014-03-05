@@ -8,6 +8,12 @@ class StaticRootS3BotoStorage(S3BotoStorage):
         kwargs['location'] = 'static'
         super(StaticRootS3BotoStorage, self).__init__(*args, **kwargs)
 
+    def url(self, name):
+        url = super(StaticRootS3BotoStorage, self).url(name)
+        if url.endswith('admin'):
+            url += '/'
+        return url
+
 
 class MediaRootS3BotoStorage(S3BotoStorage):
 

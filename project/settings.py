@@ -281,15 +281,15 @@ COMPRESS_ROOT = STATIC_ROOT
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-AWS_S3_SECURE_URLS = os.environ.get('AWS_S3_SECURE_URLS', False)
-AWS_QUERYSTRING_AUTH = os.environ.get('AWS_QUERYSTRING_AUTH', False)
+AWS_S3_SECURE_URLS = bool(os.environ.get('AWS_S3_SECURE_URLS', False))
+AWS_QUERYSTRING_AUTH = bool(os.environ.get('AWS_QUERYSTRING_AUTH', False))
 
 if AWS_STORAGE_BUCKET_NAME:
     DEFAULT_FILE_STORAGE = 'project.core.s3.MediaRootS3BotoStorage'
     STATICFILES_STORAGE = 'project.core.s3.StaticRootS3BotoStorage'
     THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 
-    S3_URL = 'http://%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+    S3_URL = '//%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
     STATIC_URL = S3_URL + STATIC_URL
     MEDIA_URL = S3_URL + MEDIA_URL
 
